@@ -57,3 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
+loftsmart_devtest.md
+.DS_Store
+

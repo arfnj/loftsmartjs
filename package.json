@@ -1,0 +1,23 @@
+{
+  "name": "loftsmartjs",
+  "version": "1.0.0",
+  "description": "Loftsmart Full Stack Developer Exercise - Node Version",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arfnj/loftsmartjs.git"
+  },
+  "author": "Andrew Fechner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arfnj/loftsmartjs/issues"
+  },
+  "homepage": "https://github.com/arfnj/loftsmartjs#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "nodemon": "^1.11.0"
+  }
+}
