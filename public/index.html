@@ -5,8 +5,19 @@
     <title>Loftsmart Contact App</title>
     <link rel="stylesheet" href="main.css">
   </head>
-<body>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-<script src="app.js"></script>
-</body>
+  <body ng-controller="loftsmartController">
+    <h1>This is my Loftsmart Contact App</h1>
+    <form ng-submit="addContact()">
+      <input type="text" ng-model="name" placeholder="name"><br>
+      <input type="text" ng-model="phone" placeholder="phone number including area code"><br>
+      <select ng-model='country' id="countries" ng-init=" country = countries[0][0]">
+        <option ng-repeat="country in countries" value="{{country[0]}}">{{country[1]}}</option>
+      </select><br>
+      <input type="text" ng-model="image" placeholder="url for avatar"><br>
+      <input type="Submit">
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="countrycodes.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
