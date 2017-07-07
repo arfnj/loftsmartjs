@@ -7,15 +7,26 @@
   </head>
   <body ng-controller="loftsmartController">
     <h1>This is my Loftsmart Contact App</h1>
+    <button ng-click="getContacts()">Display All Contacts</button>
+    <br>
+    <br>
     <form ng-submit="addContact()">
       <input type="text" ng-model="name" placeholder="name"><br>
       <input type="text" ng-model="phone" placeholder="phone number including area code"><br>
-      <select ng-model='country' id="countries" ng-init=" country = countries[0][0]">
+      <select ng-model="country" id="countries">
         <option ng-repeat="country in countries" value="{{country[0]}}">{{country[1]}}</option>
       </select><br>
       <input type="text" ng-model="image" placeholder="url for avatar"><br>
       <input type="Submit">
     </form>
+    <hr>
+    <div ng-repeat="contact in contacts">
+      <img ng-src="{{contact.image}}">
+      <p>Name: {{contact.name}}</p>
+      <p>Phone: {{contact.phone}}</p>
+      <button ng-click="">Edit Contact</button>
+      <button ng-click="deleteContact(contact.name)">Delete Contact</button>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="countrycodes.js"></script>
     <script src="app.js"></script>

@@ -3,6 +3,19 @@ const contacts = require('./contacts');
 const countryCodes = require('./countrycodes');
 const defaultImg = ''; // Pick a default image!
 
+const validNums = {
+                    '0': true,
+                    '1': true,
+                    '2': true,
+                    '3': true,
+                    '4': true,
+                    '5': true,
+                    '6': true,
+                    '7': true,
+                    '8': true,
+                    '9': true
+                  };
+
 module.exports = {
   phoneBuilder: function(phone,country) {
     let countryCode = countryCodes[country];
@@ -10,9 +23,13 @@ module.exports = {
   },
 
   contactBuilder: function(res,info,context) {
+    let cleanNumber = info.phone.split('').filter(digit => validNums[digit]).join('');
     contacts[info.name] = {
-      phone: this.phoneBuilder(info.phone,info.country),
-      image: info.image || defaultImg
+      name: info.name,
+      phone: this.phoneBuilder(cleanNumber,info.country),
+      image: info.image || defaultImg,
+      country: info.country,
+      cleanPhone: cleanNumber
     };
     this.responseBuilder(res,context,info.name,contacts[info.name]);
   },

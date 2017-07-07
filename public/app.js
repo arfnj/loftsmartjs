@@ -6,9 +6,11 @@ angular.module('loftsmart',['countryCodes'])
 
   $scope.name = '';
   $scope.phone = '';
-  $scope.country = '';
+  $scope.country = 'US';
   $scope.image = '';
   $scope.countries = [...countries.list];
+  $scope.contacts = [];
+  $scope.result = ''; // To be used to capture error messages from server
 
   $scope.getContacts = function() {
     $http({
@@ -16,10 +18,17 @@ angular.module('loftsmart',['countryCodes'])
       url: '/getall',
     })
     .then (function(results) {
-      // TBD
+      if (!Object.keys(results.data).length) {
+        console.log('No contacts, buddy');
+      } else {
+        $scope.contacts = [];
+        for (var key in results.data) {
+          $scope.contacts.push(results.data[key]);
+        }
+      }
     })
     .catch(function(error) {
-      // TBD
+      console.log(error);
     });
   };
 
@@ -33,10 +42,19 @@ angular.module('loftsmart',['countryCodes'])
       data: payload
     })
     .then (function(result) {
-      // TBD
+      if (result.data.status === "Added") {
+          $scope.name = '';
+          $scope.phone = '';
+          $scope.country = 'US';
+          $scope.image = '';
+        console.log('You did it!');
+        console.log(result.data);
+      } else {
+        console.log(result.data.status);
+      }
     })
     .catch(function(error) {
-      // TBD
+      console.log(error);
     });
   };
 
@@ -48,15 +66,19 @@ angular.module('loftsmart',['countryCodes'])
       data: {name: person}
     })
     .then (function(result) {
-      // TBD
+      if (result.data.status === "Deleted") {
+        $scope.contacts = $scope.contacts.filter(contact => contact.name !== person);
+      } else {
+        console.log(result.data.status);
+      }
     })
     .catch(function(error) {
-      // TBD
+      console.log(error);
     });
   };
 
 
-  $scope.editContact = function(person) {
+  $scope.processEdit = function(person) {
     let payload = $scope.image === '' ? {name: $scope.name, phone: $scope.phone, country: $scope.country} : {name: $scope.name, phone: $scope.phone, country: $scope.country, image: $scope.image};
     $http({
       method: 'PUT',
