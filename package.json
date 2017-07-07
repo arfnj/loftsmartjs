@@ -2,8 +2,9 @@
   "name": "loftsmartjs",
   "version": "1.0.0",
   "description": "Loftsmart Full Stack Developer Exercise - Node Version",
-  "main": "index.js",
+  "main": "./server/index.js",
   "scripts": {
+    "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/arfnj/loftsmartjs#readme",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "nodemon": "^1.11.0"
   }

@@ -13,7 +13,7 @@ module.exports = function(app, express) {
     if (contacts[req.body.name]) {
       utilities.responseBuilder(res,"That contact already exists",req.body.name,contacts[req.body.name]);
     } else {
-      utilities.contactBuilder(res,req.body);
+      utilities.contactBuilder(res,req.body,"Added");
     }
   });
 
@@ -31,7 +31,7 @@ module.exports = function(app, express) {
     } else if (!Object.keys(req.body.data).length) {
       utilities.responseBuilder(res,"You didn't change any information",req.body.name,contacts[req.body.name]);
     } else {
-      utilities.editor(res,req.body.name,data);
+      utilities.editor(res,req.body.name,req.body.data);
     }
   });
 

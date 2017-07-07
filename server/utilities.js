@@ -1,25 +1,25 @@
 /*jshint esversion: 6*/
 const contacts = require('./contacts');
 const countryCodes = require('./countrycodes');
-const defaultImg = '';
+const defaultImg = ''; // Pick a default image!
 
 module.exports = {
-  phoneBuilder: function(info) {
-    let countryCode = countryCodes[info.country];
-    return countryCode[0] === '+' ? countryCode+info.phone : `+${countryCode}${info.phone}`;
+  phoneBuilder: function(phone,country) {
+    let countryCode = countryCodes[country];
+    return countryCode[0] === '+' ? countryCode+phone : `+${countryCode}${phone}`;
   },
 
-  contactBuilder: function(res,info) {
+  contactBuilder: function(res,info,context) {
     contacts[info.name] = {
-      phone: this.phoneBuilder(info),
+      phone: this.phoneBuilder(info.phone,info.country),
       image: info.image || defaultImg
     };
-    this.responseBuilder(res,"Success",info.name,contacts[info.name]);
+    this.responseBuilder(res,context,info.name,contacts[info.name]);
   },
 
   responseBuilder: function(res,message,person,data) {
     res.send({
-      response: message,
+      status: message,
       name: person,
       contact: data
     });
@@ -32,15 +32,10 @@ module.exports = {
   },
 
   editor: function(res,person,data) {
-    if (data.name) {
-      contacts[data.name] = contacts[person];
+    if (data.name !== person) {
       delete contacts[person];
     }
-    let record = data.name || person;
-    for (var key in data) {
-      contacts[record][key] = data[key];
-    }
-    this.responseBuilder(res,"Edited",record,contacts[record]);
+    this.contactBuilder(res,data,"Edited");
   }
 
 };
