@@ -41,7 +41,6 @@ angular.module('loftsmart',['countryCodes'])
     });
   };
 
-
   $scope.addContact = function() {
     let payload = $scope.image === '' ? {name: $scope.name, phone: $scope.phone, country: $scope.country} : {name: $scope.name, phone: $scope.phone, country: $scope.country, image: $scope.image};
     $http({
@@ -93,7 +92,6 @@ angular.module('loftsmart',['countryCodes'])
     $scope.editMode = true;
   };
 
-
   $scope.processEdit = function() {
     let payload = $scope.image === '' ? {name: $scope.name, phone: $scope.phone, country: $scope.country} : {name: $scope.name, phone: $scope.phone, country: $scope.country, image: $scope.image};
     $http({
@@ -117,5 +115,3 @@ angular.module('loftsmart',['countryCodes'])
   };
 
 }]);
-
-
