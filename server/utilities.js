@@ -1,7 +1,7 @@
 /*jshint esversion: 6*/
 const contacts = require('./contacts');
 const countryCodes = require('./countrycodes');
-const defaultImg = ''; // Pick a default image!
+const defaultImg = 'https://vignette1.wikia.nocookie.net/simpsonstappedout/images/3/3a/Baby_Gerald.png/revision/latest?cb=20160112173703';
 
 const validNums = {
                     '0': true,

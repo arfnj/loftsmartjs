@@ -4,13 +4,22 @@ angular.module('loftsmart',['countryCodes'])
 
 .controller('loftsmartController', ['$scope', '$http', 'countries', function ($scope,$http,countries) {
 
+  $scope.editMode = false;
   $scope.name = '';
   $scope.phone = '';
   $scope.country = 'US';
   $scope.image = '';
   $scope.countries = [...countries.list];
   $scope.contacts = [];
+  $scope.contactIndex = undefined;
   $scope.result = ''; // To be used to capture error messages from server
+
+  $scope.resetForm = function() {
+    $scope.name = '';
+    $scope.phone = '';
+    $scope.country = 'US';
+    $scope.image = '';
+  };
 
   $scope.getContacts = function() {
     $http({
@@ -43,10 +52,8 @@ angular.module('loftsmart',['countryCodes'])
     })
     .then (function(result) {
       if (result.data.status === "Added") {
-          $scope.name = '';
-          $scope.phone = '';
-          $scope.country = 'US';
-          $scope.image = '';
+        $scope.resetForm();
+        $scope.contacts.push(result.data.contact);
         console.log('You did it!');
         console.log(result.data);
       } else {
@@ -58,7 +65,7 @@ angular.module('loftsmart',['countryCodes'])
     });
   };
 
-  $scope.deleteContact = function(person) {
+  $scope.deleteContact = function(person,index) {
     $http({
       method: 'DELETE',
       url: '/delete',
@@ -67,7 +74,7 @@ angular.module('loftsmart',['countryCodes'])
     })
     .then (function(result) {
       if (result.data.status === "Deleted") {
-        $scope.contacts = $scope.contacts.filter(contact => contact.name !== person);
+        $scope.contacts.splice(index,1);
       } else {
         console.log(result.data.status);
       }
@@ -77,20 +84,35 @@ angular.module('loftsmart',['countryCodes'])
     });
   };
 
+  $scope.editContact = function(person,index) {
+    $scope.contactIndex = index;
+    $scope.name = person;
+    $scope.phone = $scope.contacts[index].cleanPhone;
+    $scope.country = $scope.contacts[index].country;
+    $scope.image = $scope.contacts[index].image;
+    $scope.editMode = true;
+  };
 
-  $scope.processEdit = function(person) {
+
+  $scope.processEdit = function() {
     let payload = $scope.image === '' ? {name: $scope.name, phone: $scope.phone, country: $scope.country} : {name: $scope.name, phone: $scope.phone, country: $scope.country, image: $scope.image};
     $http({
       method: 'PUT',
       url: '/edit',
       headers: { 'Content-Type': 'application/json' },
-      data: {name: person, data: payload}
+      data: {name: $scope.name, data: payload}
     })
-    .then (function(results) {
-      // TBD
+    .then (function(result) {
+      if (result.data.status === "Edited") {
+        $scope.resetForm();
+        $scope.editMode = false;
+        $scope.contacts[$scope.contactIndex] = result.data.contact;
+      } else {
+        console.log(result.data.status);
+      }
     })
     .catch(function(error) {
-      // TBD
+      console.log(error);
     });
   };
 
