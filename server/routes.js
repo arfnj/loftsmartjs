@@ -5,10 +5,12 @@ const utilities = require('./utilities');
 
 module.exports = function(app, express) {
 
+  // endpoint for returning entire list of contacts
   app.get('/getall', function(req,res){
     res.send(contacts);
   });
 
+  // endpoint for adding add'l contacts; route checks for existence of name before proceeding
   app.post('/add', function(req,res) {
     if (contacts[req.body.name]) {
       utilities.responseBuilder(res,"That contact already exists",req.body.name,contacts[req.body.name]);
@@ -17,6 +19,7 @@ module.exports = function(app, express) {
     }
   });
 
+  // endpoint for removing contacts from database; route checks for existence of name before proceeding
   app.delete('/delete', function(req,res) {
     if (!contacts[req.body.name]) {
       utilities.responseBuilder(res,"There is no record with that name",req.body.name,null);
@@ -25,6 +28,7 @@ module.exports = function(app, express) {
     }
   });
 
+  // endpoint for making changes to contacts; route checks for existence of name before proceeding
   app.put('/edit', function(req,res) {
     if (!contacts[req.body.name]) {
       utilities.responseBuilder(res,"There is no record with that name",req.body.name,null);

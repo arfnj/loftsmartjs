@@ -11,8 +11,10 @@ app.listen(port, function() {
   console.log(`listening on port: ${port}`);
 });
 
-// middleware
+//middleware for easier parsing of http data
 app.use(bodyParser.json());
+
+//point to location of homepage
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Hook up routes

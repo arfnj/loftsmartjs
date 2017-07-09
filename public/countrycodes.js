@@ -1,5 +1,7 @@
 /*jshint esversion: 6*/
 
+//Angular factory with an array that connects country names to their 2-letter codes, which are used on the server to derive dialing prefixes
+
 angular.module('countryCodes',[])
 
   .factory('countries', function() {
