@@ -12,13 +12,28 @@ angular.module('loftsmart',['countryCodes'])
   $scope.countries = [...countries.list];
   $scope.contacts = [];
   $scope.contactIndex = undefined;
+  $scope.filterable = false;
+  $scope.companion = {
+                        welcome: true,
+                        avatar: false,
+                        feedback: false
+                      };
   $scope.result = ''; // To be used to capture error messages from server
 
-  $scope.resetForm = function() {
+  resetForm = function() {
     $scope.name = '';
     $scope.phone = '';
     $scope.country = 'US';
     $scope.image = '';
+  };
+
+  renderFeedback = function(message) {
+    $scope.result = message;
+    $scope.companion = {
+                          avatar: false,
+                          welcome: false,
+                          feedback: true
+                        };
   };
 
   $scope.getContacts = function() {
@@ -28,8 +43,14 @@ angular.module('loftsmart',['countryCodes'])
     })
     .then (function(results) {
       if (!Object.keys(results.data).length) {
-        console.log('No contacts, buddy');
+        $scope.result = "You've got no contacts, buddy";
+        $scope.companion = {
+                              welcome: false,
+                              avatar: false,
+                              feedback: true
+                            };
       } else {
+        $scope.filterable = true;
         $scope.contacts = [];
         for (var key in results.data) {
           $scope.contacts.push(results.data[key]);
@@ -51,12 +72,16 @@ angular.module('loftsmart',['countryCodes'])
     })
     .then (function(result) {
       if (result.data.status === "Added") {
-        $scope.resetForm();
+        resetForm();
+        $scope.filterable = true;
+        $scope.companion = {
+                              avatar: false,
+                              feedback: false,
+                              welcome: true
+                            };
         $scope.contacts.push(result.data.contact);
-        console.log('You did it!');
-        console.log(result.data);
       } else {
-        console.log(result.data.status);
+        renderFeedback(result.data.status);
       }
     })
     .catch(function(error) {
@@ -74,8 +99,13 @@ angular.module('loftsmart',['countryCodes'])
     .then (function(result) {
       if (result.data.status === "Deleted") {
         $scope.contacts.splice(index,1);
+        if (!$scope.contacts.length) {
+          $scope.filterable = false;
+          resetForm();
+          $scope.editMode = false;
+        }
       } else {
-        console.log(result.data.status);
+        renderFeedback(result.data.status);
       }
     })
     .catch(function(error) {
@@ -89,6 +119,11 @@ angular.module('loftsmart',['countryCodes'])
     $scope.phone = $scope.contacts[index].cleanPhone;
     $scope.country = $scope.contacts[index].country;
     $scope.image = $scope.contacts[index].image;
+    $scope.companion = {
+                          welcome: false,
+                          feedback: false,
+                          avatar: true
+                        };
     $scope.editMode = true;
   };
 
@@ -102,11 +137,16 @@ angular.module('loftsmart',['countryCodes'])
     })
     .then (function(result) {
       if (result.data.status === "Edited") {
-        $scope.resetForm();
+        resetForm();
         $scope.editMode = false;
+        $scope.companion = {
+                              avatar: false,
+                              feedback: false,
+                              welcome: true
+                            };
         $scope.contacts[$scope.contactIndex] = result.data.contact;
       } else {
-        console.log(result.data.status);
+        renderFeedback(result.data.status);
       }
     })
     .catch(function(error) {
