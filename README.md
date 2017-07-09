@@ -34,3 +34,11 @@ npm install
 
 ### Deploying / Publishing
 My version is live at https://arcane-atoll-41705.herokuapp.com/
+
+## Tests
+
+Use the following to test basic contact object tests and E.164 format phone number construction
+
+```shell
+node server/contacts.tests.js
+```
