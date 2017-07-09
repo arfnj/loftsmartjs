@@ -13,10 +13,10 @@ angular.module('loftsmart',['countryCodes'])
   $scope.image = '';
   //populates pull-down menu in form
   $scope.countries = [...countries.list];
+  //captures original name in case of name edit
+  $scope.originalName = '';
   //contacts to be displayed
   $scope.contacts = [];
-  //captures index in contacts array to ease in updating the view after edits or deletions
-  $scope.contactIndex = undefined;
   //controls appearance of filter box
   $scope.filterable = false;
   //controls usage of the space to the right of the form
@@ -27,6 +27,8 @@ angular.module('loftsmart',['countryCodes'])
                       };
   //holds error messages from server
   $scope.result = '';
+  //captures index in contacts array to ease in updating the view after edits or deletions
+  contactIndex = undefined;
 
   //clears fields in form - used often in other functions
   resetForm = function() {
@@ -45,6 +47,15 @@ angular.module('loftsmart',['countryCodes'])
                           feedback: true
                         };
   };
+
+  contactFinder = function(person) {
+    for (let i=0; i<$scope.contacts.length; i++) {
+      if ($scope.contacts[i].name === person) {
+        contactIndex = i;
+        break;
+      }
+     }
+  }
 
   //makes GET request to server for all contacts
   $scope.getContacts = function() {
@@ -104,7 +115,7 @@ angular.module('loftsmart',['countryCodes'])
   };
 
   //makes DELETE request to server to remove contact
-  $scope.deleteContact = function(person,index) {
+  $scope.deleteContact = function(person) {
     $http({
       method: 'DELETE',
       url: '/delete',
@@ -115,7 +126,8 @@ angular.module('loftsmart',['countryCodes'])
       //Server returns "Deleted" when contact successfully added, so screen for that
       if (result.data.status === "Deleted") {
         //Remove deleted contact without re-rendering the whole contact list
-        $scope.contacts.splice(index,1);
+        contactFinder(person);
+        $scope.contacts.splice($scope.contactIndex,1);
         if (!$scope.contacts.length) {
           $scope.filterable = false;
           resetForm();
@@ -131,12 +143,13 @@ angular.module('loftsmart',['countryCodes'])
   };
 
   //Grabs individual contact info, changes form from add mode to edit mode, and populates fields with current contact info
-  $scope.editContact = function(person,index) {
-    $scope.contactIndex = index;
+  $scope.editContact = function(person) {
+    contactFinder(person);
+    $scope.originalName = person;
     $scope.name = person;
-    $scope.phone = $scope.contacts[index].cleanPhone;
-    $scope.country = $scope.contacts[index].country;
-    $scope.image = $scope.contacts[index].image;
+    $scope.phone = $scope.contacts[contactIndex].cleanPhone;
+    $scope.country = $scope.contacts[contactIndex].country;
+    $scope.image = $scope.contacts[contactIndex].image;
     $scope.companion = {
                           welcome: false,
                           feedback: false,
@@ -152,7 +165,7 @@ angular.module('loftsmart',['countryCodes'])
       method: 'PUT',
       url: '/edit',
       headers: { 'Content-Type': 'application/json' },
-      data: {name: $scope.name, data: payload}
+      data: {name: $scope.originalName, data: payload}
     })
     .then (function(result) {
       //Server returns "Edited" when contact successfully added, so screen for that
@@ -165,7 +178,7 @@ angular.module('loftsmart',['countryCodes'])
                               welcome: true
                             };
         //Replace display info for contact with new information without re-rendering the whole contact list
-        $scope.contacts[$scope.contactIndex] = result.data.contact;
+        $scope.contacts[contactIndex] = result.data.contact;
       } else {
         renderFeedback(result.data.status);
       }
