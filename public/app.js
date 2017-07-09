@@ -71,31 +71,36 @@ angular.module('loftsmart',['countryCodes'])
 
   //makes POST request to server to add contact
   $scope.addContact = function() {
-    let payload = $scope.image === '' ? {name: $scope.name, phone: $scope.phone, country: $scope.country} : {name: $scope.name, phone: $scope.phone, country: $scope.country, image: $scope.image};
-    $http({
-      method: 'POST',
-      url: '/add',
-      headers: { 'Content-Type': 'application/json' },
-      data: payload
-    })
-    .then (function(result) {
-      //Server returns "Added" when contact successfully added, so screen for that
-      if (result.data.status === "Added") {
-        resetForm();
-        $scope.filterable = true;
-        $scope.companion = {
-                              avatar: false,
-                              feedback: false,
-                              welcome: true
-                            };
-        $scope.contacts.push(result.data.contact);
-      } else {
-        renderFeedback(result.data.status);
-      }
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+    //Ensure user puts in required contact info
+    if ($scope.name === '' || $scope.phone === '') {
+      renderFeedback("Please provide a name and number");
+    } else {
+      let payload = $scope.image === '' ? {name: $scope.name, phone: $scope.phone, country: $scope.country} : {name: $scope.name, phone: $scope.phone, country: $scope.country, image: $scope.image};
+      $http({
+        method: 'POST',
+        url: '/add',
+        headers: { 'Content-Type': 'application/json' },
+        data: payload
+      })
+      .then (function(result) {
+        //Server returns "Added" when contact successfully added, so screen for that
+        if (result.data.status === "Added") {
+          resetForm();
+          $scope.filterable = true;
+          $scope.companion = {
+                                avatar: false,
+                                feedback: false,
+                                welcome: true
+                              };
+          $scope.contacts.push(result.data.contact);
+        } else {
+          renderFeedback(result.data.status);
+        }
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    }
   };
 
   //makes DELETE request to server to remove contact
