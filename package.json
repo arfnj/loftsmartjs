@@ -1,6 +1,9 @@
 {
   "name": "loftsmartjs",
   "version": "1.0.0",
+  "engines": {
+    "node": "8.1.4"
+  },
   "description": "Loftsmart Full Stack Developer Exercise - Node Version",
   "main": "./server/index.js",
   "scripts": {
